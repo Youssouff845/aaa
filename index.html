@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LEGENDARY SUPER LEAGUE S9 - BEST 4 PLAYERS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0b0e1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .controls .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #f7d875, #f0b31c);
+            color: #0b0e1a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 25px rgba(247, 216, 117, 0.25);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+
+        .controls button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 35px rgba(247, 216, 117, 0.4);
+        }
+
+        .controls button i {
+            font-size: 1.1rem;
+        }
+
+        .controls .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .controls .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .controls .file-input-wrapper button {
+            pointer-events: none;
+        }
+
+        .file-count {
+            color: #aab4d0;
+            font-size: 0.8rem;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-right: 10px;
+        }
+
+        /* ===== حاوية التصميم (التي سيتم تحميلها كصورة) ===== */
+        .container {
+            width: 1920px;
+            max-width: 100%;
+            min-height: 1080px;
+            background: linear-gradient(145deg, #0b0e1a 0%, #141b2b 100%);
+            border-radius: 30px;
+            padding: 50px 60px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ===== خلفية الصورة داخل التصميم ===== */
+        .container .design-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            display: none;
+        }
+
+        /* طبقة شفافة خفيفة جداً فوق الخلفية (لضمان وضوح النصوص) */
+        .container .design-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.15);
+            z-index: 0;
+            pointer-events: none;
+            display: none;
+        }
+
+        .container .design-overlay.active {
+            display: block;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(247, 216, 117, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== الهيدر باللوجو كصورة ===== */
+        .header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* حاوية اللوجو */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+            filter: drop-shadow(0 0 30px rgba(247, 216, 117, 0.15));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container img:hover {
+            transform: scale(1.05);
+        }
+
+        /* اسم البطولة أسفل اللوجو */
+        .tournament-name {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 3px;
+            margin-top: 8px;
+            text-shadow: 0 0 30px rgba(247, 216, 117, 0.05);
+            position: relative;
+            display: inline-block;
+        }
+
+        .tournament-name::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #f7d875, transparent);
+            border-radius: 10px;
+        }
+
+        .tournament-name .s9 {
+            color: #f7d875;
+        }
+
+        .header .sub-title {
+            color: #8f9bb5;
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 4px;
+            margin-top: 18px;
+            text-transform: uppercase;
+        }
+
+        .header .sub-title i {
+            color: #f7d875;
+            margin: 0 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+            direction: ltr;
+        }
+
+        .players-grid .player-card:first-child { order: 4; }
+        .players-grid .player-card:nth-child(2) { order: 3; }
+        .players-grid .player-card:nth-child(3) { order: 2; }
+        .players-grid .player-card:nth-child(4) { order: 1; }
+
+        .player-card {
+            position: relative;
+            border-radius: 28px;
+            overflow: hidden;
+            aspect-ratio: 4 / 5;
+            background: linear-gradient(145deg, #1a2335, #0f1625);
+            border: 2px solid rgba(255, 215, 0, 0.12);
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-card:hover {
+            transform: scale(1.02);
+            border-color: #f7d875;
+            box-shadow: 0 12px 35px rgba(247, 216, 117, 0.15);
+        }
+
+        .player-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .player-card .rank-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            color: #f7d875;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 6px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            letter-spacing: 0.5px;
+            z-index: 3;
+        }
+
+        .player-card .player-info {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            text-align: center;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.92));
+            padding: 50px 12px 18px 12px;
+            color: #fff;
+            z-index: 2;
+        }
+
+        .player-card .player-info .pname {
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .player-card .player-info .pteam {
+            font-size: 0.95rem;
+            color: #f7d875;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .player-card .player-info .pstats {
+            font-size: 0.85rem;
+            color: #aab4d0;
+            margin-top: 6px;
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .player-card .player-info .pstats span {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .player-card .placeholder-text {
+            color: #6a7a9a;
+            font-size: 1rem;
+            text-align: center;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        .player-card .placeholder-text .icon {
+            font-size: 4rem;
+            color: #3a4a6a;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer .footer-text {
+            color: #4a5a7a;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .footer .footer-text i {
+            color: #f7d875;
+            margin: 0 5px;
+        }
+
+        .loading-message {
+            color: #f7d875;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            background: rgba(247, 216, 117, 0.1);
+            border-radius: 40px;
+            border: 1px solid rgba(247, 216, 117, 0.2);
+            display: none;
+            margin-top: 10px;
+        }
+
+        .loading-message.show {
+            display: block;
+        }
+
+        .summary-stats {
+            color: #aab4d0;
+            font-size: 0.85rem;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 8px;
+        }
+
+        .summary-stats span {
+            margin: 0 12px;
+        }
+
+        .summary-stats .highlight {
+            color: #f7d875;
+            font-weight: 700;
+        }
+
+        /* ===== نافذة الأسماء المستعارة ===== */
+        .alias-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .alias-overlay.show {
+            display: flex;
+        }
+        .alias-popup {
+            background: linear-gradient(145deg, #1a2335, #0f1625);
+            border: 2px solid rgba(247, 216, 117, 0.2);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+        .alias-popup h2 {
+            color: #f7d875;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .alias-popup .sub {
+            color: #8f9bb5;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .alias-popup .alias-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .alias-popup .alias-item input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+        .alias-popup .alias-item input::placeholder {
+            color: #4a5a7a;
+        }
+        .alias-popup .alias-item .label {
+            color: #aab4d0;
+            font-size: 0.8rem;
+            min-width: 80px;
+        }
+        .alias-popup .alias-item .delete-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px 8px;
+        }
+        .alias-popup .alias-item .delete-btn:hover {
+            color: #ff0000;
+        }
+        .alias-popup .btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .alias-popup .btn-row button {
+            padding: 10px 30px;
+            border-radius: 60px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .alias-popup .btn-row .save-btn {
+            background: linear-gradient(135deg, #f7d875, #f0b31c);
+            color: #0b0e1a;
+        }
+        .alias-popup .btn-row .save-btn:hover {
+            transform: scale(1.05);
+        }
+        .alias-popup .btn-row .close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #aab4d0;
+        }
+        .alias-popup .btn-row .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .alias-popup .add-alias-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            color: #aab4d0;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .alias-popup .add-alias-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #f7d875;
+            color: #f7d875;
+        }
+        .alias-popup .current-aliases {
+            margin-bottom: 16px;
+        }
+        .alias-popup .current-aliases .tag {
+            display: inline-block;
+            background: rgba(247, 216, 117, 0.1);
+            border: 1px solid rgba(247, 216, 117, 0.2);
+            color: #f7d875;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 4px;
+        }
+        .alias-popup .current-aliases .tag .remove {
+            cursor: pointer;
+            margin-right: 6px;
+            color: #ff6b6b;
+        }
+
+        .alias-popup .current-aliases .tag .arrow {
+            color: #4a5a7a;
+            margin: 0 4px;
+        }
+
+        @media (max-width: 768px) {
+            .alias-popup {
+                padding: 25px;
+            }
+            .alias-popup .alias-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .alias-popup .alias-item .label {
+                min-width: auto;
+            }
+            .logo-container img {
+                max-width: 120px;
+            }
+            .tournament-name {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- نافذة الأسماء المستعارة -->
+    <div class="alias-overlay" id="aliasOverlay">
+        <div class="alias-popup">
+            <h2>🔗 الأسماء المستعارة</h2>
+            <div class="sub">الاسم في CSV ← الاسم الرسمي في الموقع</div>
+            <div class="current-aliases" id="currentAliases"></div>
+            <div id="aliasList"></div>
+            <button class="add-alias-btn" onclick="addAliasRow()">+ إضافة اسم مستعار جديد</button>
+            <div class="btn-row">
+                <button class="save-btn" onclick="saveAliases()">💾 حفظ</button>
+                <button class="close-btn" onclick="closeAliasPopup()">✖ إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="btn-group">
+            <button onclick="downloadImage()">
+                <i class="fas fa-download"></i> تحميل الصورة PNG
+            </button>
+
+            <button onclick="openAliasPopup()" style="background: linear-gradient(135deg, #cc5de8, #862e9c); color: #fff;">
+                <i class="fas fa-link"></i> الأسماء المستعارة
+            </button>
+
+            <div class="file-input-wrapper">
+                <button style="background: linear-gradient(135deg, #51cf66, #2b8a3e); color: #fff;">
+                    <i class="fas fa-file-csv"></i> جمع CSV
+                </button>
+                <input type="file" id="csvFiles" accept=".csv" multiple onchange="loadMultipleCSV(event)" />
+            </div>
+
+            <div class="file-input-wrapper">
+                <button style="background: linear-gradient(135deg, #6bc5f7, #1a7fc1); color: #fff;">
+                    <i class="fas fa-images"></i> اختيار الصور
+                </button>
+                <input type="file" id="imageFiles" accept="image/*" multiple onchange="loadImagesManually(event)" />
+            </div>
+
+            <div class="file-input-wrapper">
+                <button style="background: linear-gradient(135deg, #f7d875, #f0b31c); color: #0b0e1a;">
+                    <i class="fas fa-upload"></i> رفع قائمة اللاعبين
+                </button>
+                <input type="file" id="playersListFile" accept=".txt,.csv" onchange="loadPlayersList(event)" />
+            </div>
+
+            <!-- ===== زر رفع خلفية الصورة ===== -->
+            <div class="file-input-wrapper">
+                <button style="background: linear-gradient(135deg, #ff922b, #e8590c); color: #fff;">
+                    <i class="fas fa-image"></i> خلفية الصورة
+                </button>
+                <input type="file" id="backgroundFile" accept="image/*" onchange="loadDesignBackground(event)" />
+            </div>
+            
+            <button onclick="resetData()" style="background: linear-gradient(135deg, #ff6b6b, #c92a2a); color: #fff;">
+                <i class="fas fa-undo"></i> إعادة تعيين
+            </button>
+        </div>
+        <div id="fileCountDisplay" class="file-count">📁 0 ملف</div>
+        <div class="loading-message" id="loadingMessage"></div>
+        <div class="summary-stats" id="summaryStats" style="display:none;">
+            <span>📊 إجمالي اللاعبين: <span class="highlight" id="totalPlayers">0</span></span>
+            <span>🏆 أفضل لاعب: <span class="highlight" id="bestPlayer">-</span></span>
+            <span>📁 ملفات: <span class="highlight" id="fileCount">0</span></span>
+        </div>
+    </div>
+
+    <!-- ===== حاوية التصميم (سيتم تحميلها كصورة) ===== -->
+    <div class="container" id="capture">
+
+        <!-- ===== خلفية الصورة داخل التصميم ===== -->
+        <img id="designBackground" class="design-background" src="" alt="خلفية التصميم" />
+        <div class="design-overlay" id="designOverlay"></div>
+
+        <!-- ===== الهيدر باللوجو كصورة ===== -->
+        <div class="header">
+            <!-- اللوجو كصورة -->
+            <div class="logo-container">
+                <img src="logo.png" alt="LEGENDARY SUPERLATIVE MEMORY OF THE EARTH" id="siteLogo" />
+            </div>
+
+            <!-- اسم البطولة -->
+            <div class="tournament-name">
+                LEGENDARY SUPER LEAGUE <span class="s9">S9</span>
+            </div>
+
+            <div class="sub-title">
+                <i class="fas fa-fire"></i> BEST 4 PLAYERS <i class="fas fa-fire"></i>
+            </div>
+        </div>
+
+        <div class="players-grid" id="playersGrid">
+            <div class="player-card" data-index="0">
+                <div class="rank-badge" style="display:none;">#1</div>
+                <div class="placeholder-text">
+                    <span class="icon">🖼️</span>
+                    <span>انتظر الصورة</span>
+                </div>
+                <div class="player-info" style="display:none;">
+                    <div class="pname">-</div>
+                    <div class="pteam">-</div>
+                    <div class="pstats">
+                        <span>ELIMS 0</span>
+                        <span>DAMAGE 0</span>
+                        <span>ASSIST 0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="player-card" data-index="1">
+                <div class="rank-badge" style="display:none;">#2</div>
+                <div class="placeholder-text">
+                    <span class="icon">🖼️</span>
+                    <span>انتظر الصورة</span>
+                </div>
+                <div class="player-info" style="display:none;">
+                    <div class="pname">-</div>
+                    <div class="pteam">-</div>
+                    <div class="pstats">
+                        <span>ELIMS 0</span>
+                        <span>DAMAGE 0</span>
+                        <span>ASSIST 0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="player-card" data-index="2">
+                <div class="rank-badge" style="display:none;">#3</div>
+                <div class="placeholder-text">
+                    <span class="icon">🖼️</span>
+                    <span>انتظر الصورة</span>
+                </div>
+                <div class="player-info" style="display:none;">
+                    <div class="pname">-</div>
+                    <div class="pteam">-</div>
+                    <div class="pstats">
+                        <span>ELIMS 0</span>
+                        <span>DAMAGE 0</span>
+                        <span>ASSIST 0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="player-card" data-index="3">
+                <div class="rank-badge" style="display:none;">#4</div>
+                <div class="placeholder-text">
+                    <span class="icon">🖼️</span>
+                    <span>انتظر الصورة</span>
+                </div>
+                <div class="player-info" style="display:none;">
+                    <div class="pname">-</div>
+                    <div class="pteam">-</div>
+                    <div class="pstats">
+                        <span>ELIMS 0</span>
+                        <span>DAMAGE 0</span>
+                        <span>ASSIST 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">
+                <i class="fas fa-trophy"></i> LEGENDARY SUPER LEAGUE S9 <i class="fas fa-trophy"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        //  🏷️ قائمة الأسماء المستعارة (الاسم في CSV → الاسم الرسمي)
+        // ============================================================
+        const DEFAULT_ALIASES = {
+            'SS.7mizox': 'B2R.7mizox',
+            'TS.OBITO+': 'B2R.OBITO+',
+            'TSㅤAYUUUB': 'B2R.AYOUUB',
+            'AstaaMadada.': 'CLVS Astaa',
+            'N͜SㅤLARA': 'CLVS S9AND7',
+            'HT.TUURBOx16': 'HT.TURBO',
+            'F4ntom.n1': 'MLS.F4ntom!',
+            '7CㅤRIOX™': 'VS.R!oX7',
+            'VCT.Law': 'MLS.Law!',
+            'EAGLE.FAST.': 'MLS.Eagle!',
+            'VCT.DBL!7': 'MLS.DBL7!',
+            'Rinn.FAST': 'MLS.Rinn!',
+            'Blz.Law!': 'MLS.Rami',
+            'SIGMA.Zerox7': 'VS.ZEROX',
+            '7CㅤBOS9LA': 'VS.BOS9LA',
+            'CLVS DOMIN77': 'CLVS DOMIN',
+            '7CㅤEXCELSIOR': 'VS.EXCELSIOR',
+            'VS.JOKE%': 'VS.JOKE',
+            'J SINER WASK': 'GENUIS WASK',
+            'AMT.CapsGb': 'CAPS WASK'
+        };
+
+        // ===== تحميل الأسماء المستعارة من localStorage أو استخدام الافتراضية =====
+        let ALIAS_MAP = {};
+
+        function loadAliasesFromStorage() {
+            try {
+                const saved = localStorage.getItem('player_aliases');
+                if (saved && JSON.parse(saved) && Object.keys(JSON.parse(saved)).length > 0) {
+                    ALIAS_MAP = JSON.parse(saved);
+                } else {
+                    ALIAS_MAP = { ...DEFAULT_ALIASES };
+                }
+            } catch(e) {
+                ALIAS_MAP = { ...DEFAULT_ALIASES };
+            }
+        }
+
+        // ===== حفظ الأسماء المستعارة =====
+        function saveAliasesToStorage() {
+            try {
+                localStorage.setItem('player_aliases', JSON.stringify(ALIAS_MAP));
+            } catch(e) {}
+        }
+
+        // ============================================================
+        //  🔍 دالة البحث عن اللاعب (مع الأسماء المستعارة)
+        // ============================================================
+        function findPlayerInDB(searchName, searchId = null) {
+            if (!searchName && !searchId) return null;
+            if (PLAYERS_DB.length === 0) return null;
+
+            // 1. البحث بالـ ID
+            if (searchId) {
+                const byId = PLAYERS_DB.find(p => p.id === searchId.toString());
+                if (byId) return byId;
+            }
+
+            // 2. البحث بالاسم المستعار (يجب أن يكون مطابقاً تاماً)
+            const cleanSearch = searchName.trim();
+            if (ALIAS_MAP[cleanSearch]) {
+                const officialName = ALIAS_MAP[cleanSearch];
+                // البحث بالاسم الرسمي
+                const byAlias = PLAYERS_DB.find(p => p.name === officialName);
+                if (byAlias) return byAlias;
+                // البحث بالاسم الرسمي بعد تنظيفه
+                const cleanOfficial = cleanText(officialName);
+                for (const player of PLAYERS_DB) {
+                    if (cleanText(player.name) === cleanOfficial) {
+                        return player;
+                    }
+                }
+            }
+
+            // 3. البحث بالاسم المطابق بعد التنظيف
+            const cleanedSearch2 = cleanText(searchName);
+            for (const player of PLAYERS_DB) {
+                const cleanedName = cleanText(player.name);
+                if (cleanedName === cleanedSearch2) {
+                    return player;
+                }
+            }
+
+            // 4. البحث بتطابق جزئي
+            for (const player of PLAYERS_DB) {
+                const cleanedName = cleanText(player.name);
+                if (cleanedName.includes(cleanedSearch2) || cleanedSearch2.includes(cleanedName)) {
+                    return player;
+                }
+            }
+
+            // 5. البحث بالكلمات المفتاحية
+            const searchKeywords = searchName.split(/[\s.]+/).filter(w => w.length > 1);
+            for (const player of PLAYERS_DB) {
+                const playerKeywords = player.name.split(/[\s.]+/).filter(w => w.length > 1);
+                for (const sw of searchKeywords) {
+                    for (const pw of playerKeywords) {
+                        if (sw.toLowerCase() === pw.toLowerCase() || 
+                            sw.toLowerCase().includes(pw.toLowerCase()) || 
+                            pw.toLowerCase().includes(sw.toLowerCase())) {
+                            return player;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // ===== دالة تنظيف النص =====
+        function cleanText(text) {
+            if (!text) return '';
+            return text
+                .replace(/[\u2000-\u200F\u2028-\u202F]/g, '')
+                .replace(/[^\w\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .toLowerCase();
+        }
+
+        // ===== الحصول على الاسم الرسمي من الاسم المستعار =====
+        function getOfficialName(aliasName) {
+            const trimmed = aliasName.trim();
+            if (ALIAS_MAP[trimmed]) {
+                return ALIAS_MAP[trimmed];
+            }
+            return aliasName;
+        }
+
+        // ============================================================
+        //  📋 نافذة الأسماء المستعارة
+        // ============================================================
+        function openAliasPopup() {
+            const overlay = document.getElementById('aliasOverlay');
+            overlay.classList.add('show');
+            renderAliases();
+        }
+
+        function closeAliasPopup() {
+            document.getElementById('aliasOverlay').classList.remove('show');
+        }
+
+        function renderAliases() {
+            const currentDiv = document.getElementById('currentAliases');
+            const container = document.getElementById('aliasList');
+            
+            const keys = Object.keys(ALIAS_MAP);
+            if (keys.length > 0) {
+                currentDiv.innerHTML = '<div style="color:#8f9bb5;font-size:0.85rem;margin-bottom:8px;">📌 الأسماء المستعارة الحالية:</div>' +
+                    keys.map(key => 
+                        `<span class="tag">${key} <span class="arrow">→</span> ${ALIAS_MAP[key]} <span class="remove" onclick="removeAlias('${key.replace(/'/g, "\\'")}')">✕</span></span>`
+                    ).join('');
+            } else {
+                currentDiv.innerHTML = '<div style="color:#4a5a7a;font-size:0.85rem;">لا توجد أسماء مستعارة</div>';
+            }
+
+            container.innerHTML = `
+                <div class="alias-item">
+                    <span class="label">الاسم في CSV:</span>
+                    <input type="text" id="aliasInput" placeholder="مثال: SIGMA.Zerox7" />
+                </div>
+                <div class="alias-item">
+                    <span class="label">الاسم الرسمي:</span>
+                    <input type="text" id="targetInput" placeholder="مثال: VS.ZEROX" />
+                </div>
+                <button class="add-alias-btn" onclick="addAliasFromInput()" style="margin-top:8px;">➕ إضافة</button>
+            `;
+        }
+
+        function addAliasFromInput() {
+            const alias = document.getElementById('aliasInput').value.trim();
+            const target = document.getElementById('targetInput').value.trim();
+            if (!alias || !target) {
+                showMessage('⚠️ يرجى إدخال الاسم المستعار والاسم الرسمي', true);
+                setTimeout(hideMessage, 2000);
+                return;
+            }
+            ALIAS_MAP[alias] = target;
+            saveAliasesToStorage();
+            renderAliases();
+            showMessage(`✅ تم إضافة: ${alias} → ${target}`);
+            setTimeout(hideMessage, 2000);
+        }
+
+        function removeAlias(key) {
+            delete ALIAS_MAP[key];
+            saveAliasesToStorage();
+            renderAliases();
+            showMessage(`🗑️ تم حذف: ${key}`);
+            setTimeout(hideMessage, 1500);
+        }
+
+        function addAliasRow() {
+            document.getElementById('aliasInput').focus();
+        }
+
+        function saveAliases() {
+            saveAliasesToStorage();
+            showMessage('✅ تم حفظ الأسماء المستعارة');
+            setTimeout(hideMessage, 2000);
+            closeAliasPopup();
+            if (Object.keys(allPlayersStats).length > 0) {
+                reprocessData();
+            }
+        }
+
+        // ============================================================
+        //  🖼️ تحميل خلفية التصميم (للصورة النهائية فقط)
+        // ============================================================
+        function loadDesignBackground(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showMessage('⏳ جاري تحميل خلفية الصورة...');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgData = e.target.result;
+                const bgImg = document.getElementById('designBackground');
+                const overlay = document.getElementById('designOverlay');
+                
+                bgImg.src = imgData;
+                bgImg.style.display = 'block';
+                overlay.classList.add('active');
+                
+                showMessage('✅ تم تحميل خلفية الصورة بنجاح!');
+                setTimeout(hideMessage, 3000);
+            };
+            reader.onerror = function() {
+                showMessage('⚠️ خطأ في تحميل الخلفية', true);
+                setTimeout(hideMessage, 3000);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ============================================================
+        //  📂 قائمة اللاعبين
+        // ============================================================
+        let PLAYERS_DB = [];
+
+        function loadPlayersList(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showMessage(`⏳ جاري تحميل قائمة اللاعبين...`);
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const lines = content.split('\n').filter(line => line.trim() !== '');
+                
+                let startIndex = 0;
+                if (lines[0].includes('Team Name') || lines[0].includes('Player ID')) {
+                    startIndex = 1;
+                }
+
+                const newPlayers = [];
+                
+                for (let i = startIndex; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    
+                    let parts = null;
+                    
+                    if (line.includes('\t')) {
+                        parts = line.split('\t').filter(p => p.trim() !== '');
+                    } else if (line.match(/\s{2,}/)) {
+                        parts = line.split(/\s{2,}/).filter(p => p.trim() !== '');
+                    } else if (line.includes(',')) {
+                        parts = line.split(',').filter(p => p.trim() !== '');
+                    } else {
+                        const match = line.match(/^(\S+)\s+(\S+)\s+(.+)$/);
+                        if (match) {
+                            parts = [match[1], match[2], match[3]];
+                        }
+                    }
+
+                    if (parts && parts.length >= 3) {
+                        const team = parts[0].trim().replace(/[\u2000-\u200F\u2028-\u202F]/g, '').trim();
+                        const id = parts[1].trim();
+                        let name = parts.slice(2).join(' ').trim().replace(/[\u2000-\u200F\u2028-\u202F]/g, '').trim();
+                        name = name.replace(/^["']|["']$/g, '').trim();
+                        
+                        if (id && name && name.length > 1) {
+                            newPlayers.push({
+                                id: id,
+                                name: name,
+                                team: team || 'N/A'
+                            });
+                        }
+                    }
+                }
+
+                if (newPlayers.length > 0) {
+                    PLAYERS_DB = newPlayers;
+                    showMessage(`✅ تم تحميل ${PLAYERS_DB.length} لاعب من الملف`);
+                    setTimeout(hideMessage, 3000);
+                    
+                    if (Object.keys(allPlayersStats).length > 0) {
+                        reprocessData();
+                    }
+                } else {
+                    showMessage(`⚠️ لم يتم العثور على بيانات صالحة`, true);
+                    setTimeout(hideMessage, 4000);
+                }
+            };
+
+            reader.onerror = function() {
+                showMessage('⚠️ خطأ في قراءة الملف', true);
+                setTimeout(hideMessage, 3000);
+            };
+
+            reader.readAsText(file);
+        }
+
+        // ============================================================
+        //  📊 معالجة البيانات
+        // ============================================================
+        function reprocessData() {
+            const playerList = Object.values(allPlayersStats);
+            let matchedCount = 0;
+            
+            playerList.forEach(p => {
+                // محاولة تحويل الاسم المستعار إلى الاسم الرسمي
+                const officialName = getOfficialName(p.player);
+                if (officialName !== p.player) {
+                    p.player = officialName;
+                }
+                
+                const found = findPlayerInDB(p.player);
+                if (found) {
+                    p.team = found.team;
+                    matchedCount++;
+                }
+            });
+
+            // دمج اللاعبين الذين لديهم نفس الاسم (بعد التصحيح)
+            const mergedStats = {};
+            playerList.forEach(p => {
+                const key = p.player.toLowerCase();
+                if (!mergedStats[key]) {
+                    mergedStats[key] = { ...p };
+                } else {
+                    mergedStats[key].kill += p.kill;
+                    mergedStats[key].damage += p.damage;
+                    mergedStats[key].assist += p.assist;
+                }
+            });
+
+            playersData = sortPlayers(Object.values(mergedStats));
+            playersData.forEach((p, index) => {
+                p.rank = index + 1;
+            });
+
+            updateUI();
+            updateSummaryStats();
+            updateFileCount();
+            
+            showMessage(`✅ تم تحديث بيانات ${matchedCount} لاعب`);
+            setTimeout(hideMessage, 2000);
+        }
+
+        // ============================================================
+        //  📥 دمج ملفات CSV
+        // ============================================================
+        function loadMultipleCSV(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) {
+                showMessage('⚠️ لم تختار أي ملفات', true);
+                setTimeout(hideMessage, 2000);
+                return;
+            }
+
+            showMessage(`⏳ جاري معالجة ${files.length} ملف...`);
+            
+            let processedCount = 0;
+            const totalFiles = files.length;
+
+            allPlayersStats = {};
+            loadedFilesCount = 0;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const csvData = e.target.result;
+                    const parsed = Papa.parse(csvData, {
+                        header: true,
+                        skipEmptyLines: true,
+                        trimHeaders: true
+                    });
+
+                    if (parsed.errors.length > 0) {
+                        console.error(`خطأ في ملف ${file.name}:`, parsed.errors);
+                        processedCount++;
+                        checkCompletion();
+                        return;
+                    }
+
+                    parsed.data.forEach(row => {
+                        let playerName = (row['Player Name'] || row['Player Name'] || '').trim();
+                        let teamName = (row['Team Name'] || row['Team Name'] || '').trim();
+                        const playerId = (row['Player ID'] || row['Player ID'] || '').trim();
+
+                        // 🔥 تحويل الاسم المستعار إلى الاسم الرسمي
+                        const officialName = getOfficialName(playerName);
+                        if (officialName !== playerName) {
+                            playerName = officialName;
+                        }
+
+                        let found = null;
+                        if (playerName) {
+                            found = findPlayerInDB(playerName, playerId);
+                        } else if (playerId) {
+                            found = findPlayerInDB('', playerId);
+                        }
+
+                        if (found) {
+                            if (!playerName || playerName === '') {
+                                playerName = found.name;
+                            }
+                            if (!teamName) {
+                                teamName = found.team;
+                            }
+                        }
+
+                        const kill = parseInt(row['Kill']) || parseInt(row['Kill']) || 0;
+                        const damage = parseInt(row['Damage']) || parseInt(row['Damage']) || 0;
+                        const assist = parseInt(row['Assist']) || parseInt(row['Assist']) || 0;
+
+                        if (!playerName || playerName === '') return;
+
+                        const key = playerName.toLowerCase();
+                        if (!allPlayersStats[key]) {
+                            allPlayersStats[key] = {
+                                player: playerName,
+                                team: teamName || 'N/A',
+                                kill: 0,
+                                damage: 0,
+                                assist: 0
+                            };
+                        }
+                        
+                        allPlayersStats[key].kill += kill;
+                        allPlayersStats[key].damage += damage;
+                        allPlayersStats[key].assist += assist;
+                    });
+
+                    processedCount++;
+                    loadedFilesCount++;
+                    updateFileCount();
+                    checkCompletion();
+                };
+
+                reader.onerror = function() {
+                    console.error(`خطأ في قراءة الملف: ${file.name}`);
+                    processedCount++;
+                    checkCompletion();
+                };
+
+                reader.readAsText(file);
+            }
+
+            function checkCompletion() {
+                if (processedCount === totalFiles) {
+                    const playerList = Object.values(allPlayersStats);
+                    
+                    if (playerList.length === 0) {
+                        showMessage('⚠️ لم يتم العثور على بيانات صالحة في الملفات', true);
+                        setTimeout(hideMessage, 3000);
+                        return;
+                    }
+
+                    // تحديث أسماء الفرق
+                    playerList.forEach(p => {
+                        const found = findPlayerInDB(p.player);
+                        if (found) {
+                            p.team = found.team;
+                        }
+                    });
+
+                    playersData = sortPlayers([...playerList]);
+                    playersData.forEach((p, index) => {
+                        p.rank = index + 1;
+                    });
+
+                    updateUI();
+                    updateSummaryStats();
+                    
+                    showMessage(`✅ تم جمع بيانات ${playerList.length} لاعب من ${totalFiles} ملف`);
+                    setTimeout(hideMessage, 3000);
+                    
+                    setTimeout(() => loadAutoImages(), 500);
+                }
+            }
+        }
+
+        // ============================================================
+        //  🖼️ باقي الدوال (الصور، التحميل، إلخ)
+        // ============================================================
+
+        // ===== قائمة الصور التلقائية =====
+        const AUTO_IMAGES = [
+    'HELL MUTEzz.png',
+    'XP LBEHJAAa.png',
+    'XP POKIIX.png',
+    'XP Skyitoo.png',
+    'AHL REMIND.png',
+    'AHL HAWK.png',
+    'AHL SIFOUX.png',
+    'AHL SIMOX.png',
+    'AHL YASSER.png',
+    'AHL KING.png',
+    'AL.7ARBIiiN1.png',
+    'AL.venomily!.png',
+    'AL.SPE7Dx.png',
+    'AL.PALMER777.png',
+    'AL.LATIF7.png',
+    'B2R.MoreFSTR.png',
+    'B2R.7mizox.png',
+    'B2R.BROKEN!.png',
+    'B2R.OBITO+.png',
+    'B2R.LeoWOLF¡.png',
+    'B2R.AYOUUB.png',
+    'CLVS Astaa.png',
+    'CLVS LeoNimo.png',
+    'CLVS XELOR11.png',
+    'CLVS REDX.png',
+    'CLVS S9AND7.png',
+    'CLVS YUNES.png',
+    'CLVS DOMIN.png',
+    'GG PROBAY.png',
+    'GG 9B9B.png',
+    'GG SHARIN.png',
+    'GG ZIZOXX.png',
+    'GG.OTHMAN.png',
+    'GG.EASY’s.png',
+    'HELL Mohab7x.png',
+    'HELL MUTEzz.png',
+    'HELL HITHAM!.png',
+    'HELL JERRY7!.png',
+    'HELL AHMED.png',
+    'HT.SYAZ.png',
+    'HT.SAIT4MA.png',
+    'HT.BAWS!!.png',
+    'HT.NEGAN.png',
+    'HT.DOWLY.png',
+    'HT.TURBO.png',
+    'JF　BLACK.png',
+    'JF YA7YAWY.png',
+    'JF　Ammar.png',
+    'JF BrbrX21.png',
+    'JF BIGBOSS.png',
+    'MLS.F4ntom!.png',
+    'MLS.Law!.png',
+    'MLS.Eagle!.png',
+    'MLS.DBL7!.png',
+    'MLS.Rinn!.png',
+    'MLS.Rami.png',
+    'NEXE.C4SPERR.png',
+    'NEXE.TADLAOUI!.png',
+    'NEXé.ZEEX!.png',
+    'NEXé.AYS4R!.png',
+    'Nexé.AMINE7.png',
+    'Nexé.OUSHIDA.png',
+    'VS.R!oX7.png',
+    'VS.ZEROX.png',
+    'VS.BOS9LA.png',
+    'VS.DIABLO.png',
+    'VS.EXCELSIOR.png',
+    'VS.JOKE.png',
+    'ALITAOX WASK.png',
+    'GENUIS WASK.png',
+    'LMECH WASK.png',
+    'EVAN WASK.png',
+    'BOHATER WASK.png',
+    'CAPS WASK.png',
+    'XP POKIIX.png',
+    'XP Skyitoo.png',
+    'XP LBEHJAAa.png',
+    'XP ZACK.png',
+    'XP PERUzx.png',
+    'XP MR ALi.png'
+];
+
+        // ===== المتغيرات العامة =====
+        let playersData = [];
+        let allPlayersStats = {};
+        let loadedFilesCount = 0;
+
+        // ===== قائمة اللاعبين الافتراضية =====
+        const DEFAULT_PLAYERS_DB = [
+            { id: '810557528', name: 'AHL REMIND', team: 'AHL' },
+            { id: '1609290171', name: 'AHL HAWK', team: 'AHL' },
+            { id: '1370211255', name: 'AHL SIFOUX', team: 'AHL' },
+            { id: '389129106', name: 'AHL SIMOX', team: 'AHL' },
+            { id: '1061302739', name: 'AHL YASSER', team: 'AHL' },
+            { id: '520905729', name: 'AHL KING', team: 'AHL' },
+            { id: '2242698052', name: 'AL.7ARBIiiN1', team: 'ALLIANCE' },
+            { id: '761238136', name: 'AL.venomily!', team: 'ALLIANCE' },
+            { id: '1588419494', name: 'AL.SPE7Dx', team: 'ALLIANCE' },
+            { id: '1282698096', name: 'AL.PALMER777', team: 'ALLIANCE' },
+            { id: '1766915212', name: 'AL.LATIF7', team: 'ALLIANCE' },
+            { id: '8285014831', name: 'B2R.MoreFSTR', team: 'BACK2REVENGE' },
+            { id: '11494231407', name: 'B2R.7mizox', team: 'BACK2REVENGE' },
+            { id: '2617925144', name: 'B2R.BROKEN!', team: 'BACK2REVENGE' },
+            { id: '932197224', name: 'B2R.OBITO+', team: 'BACK2REVENGE' },
+            { id: '822465551', name: 'B2R.LeoWOLF¡', team: 'BACK2REVENGE' },
+            { id: '384459931', name: 'B2R.AYOUUB', team: 'BACK2REVENGE' },
+            { id: '745401823', name: 'CLVS Astaa', team: 'CLEAR VISION' },
+            { id: '549665108', name: 'CLVS LeoNimo', team: 'CLEAR VISION' },
+            { id: '961381867', name: 'CLVS XELOR11', team: 'CLEAR VISION' },
+            { id: '578201438', name: 'CLVS REDX', team: 'CLEAR VISION' },
+            { id: '519515103', name: 'CLVS S9AND7', team: 'CLEAR VISION' },
+            { id: '387947307', name: 'CLVS YUNES', team: 'CLEAR VISION' },
+            { id: '2246065429', name: 'CLVS DOMIN', team: 'CLEAR VISION' },
+            { id: '1154166616', name: 'GG PROBAY', team: 'GG ESPORTS' },
+            { id: '1867107270', name: 'GG 9B9B', team: 'GG ESPORTS' },
+            { id: '1200821084', name: 'GG SHARIN', team: 'GG ESPORTS' },
+            { id: '808044141', name: 'GG ZIZOXX', team: 'GG ESPORTS' },
+            { id: '289194868', name: 'GG.OTHMAN', team: 'GG ESPORTS' },
+            { id: '1184872133', name: 'GG.EASY\'s', team: 'GG ESPORTS' },
+            { id: '484576751', name: 'HELL Mohab7x', team: 'HELL ESP' },
+            { id: '155102618', name: 'HELL MUTEzz', team: 'HELL ESP' },
+            { id: '561745855', name: 'HELL HITHAM!', team: 'HELL ESP' },
+            { id: '614461392', name: 'HELL JERRY7!', team: 'HELL ESP' },
+            { id: '174169922', name: 'HELL AHMED', team: 'HELL ESP' },
+            { id: '1359830865', name: 'HT.SYAZ', team: 'HUNTERS' },
+            { id: '2564693670', name: 'HT.SAIT4MA', team: 'HUNTERS' },
+            { id: '98046288', name: 'HT.BAWS!!', team: 'HUNTERS' },
+            { id: '401853916', name: 'HT.NEGAN', team: 'HUNTERS' },
+            { id: '838500387', name: 'HT.DOWLY', team: 'HUNTERS' },
+            { id: '943081384', name: 'HT.TURBO', team: 'HUNTERS' },
+            { id: '1473363758', name: 'JF BLACK', team: 'JOKO FORCE' },
+            { id: '882972930', name: 'JF YA7YAWY', team: 'JOKO FORCE' },
+            { id: '1056998019', name: 'JF Ammar', team: 'JOKO FORCE' },
+            { id: '175137734', name: 'JF BrbrX21', team: 'JOKO FORCE' },
+            { id: '215914753', name: 'JF BIGBOSS', team: 'JOKO FORCE' },
+            { id: '937419820', name: 'MLS.F4ntom!', team: 'MALOS' },
+            { id: '2662579666', name: 'MLS.Law!', team: 'MALOS' },
+            { id: '49086963', name: 'MLS.Eagle!', team: 'MALOS' },
+            { id: '1564975159', name: 'MLS.DBL7!', team: 'MALOS' },
+            { id: '1856715825', name: 'MLS.Rinn!', team: 'MALOS' },
+            { id: '4795528871', name: 'MLS.Rami', team: 'MALOS' },
+            { id: '663703947', name: 'NEXE.C4SPERR', team: 'NEXE' },
+            { id: '1830064320', name: 'NEXE.TADLAOUI!', team: 'NEXE' },
+            { id: '8006448941', name: 'NEXé.ZEEX!', team: 'NEXE' },
+            { id: '1367467917', name: 'NEXé.AYS4R!', team: 'NEXE' },
+            { id: '1195536134', name: 'Nexé.AMINE7', team: 'NEXE' },
+            { id: '259335954', name: 'Nexé.OUSHIDA', team: 'NEXE' },
+            { id: '5892680884', name: 'VS.RIOX7', team: 'VOLCANOS' },
+            { id: '1825842678', name: 'VS.ZEROX', team: 'VOLCANOS' },
+            { id: '640931282', name: 'VS.BOS9LA', team: 'VOLCANOS' },
+            { id: '2164584100', name: 'VS.DIABLO', team: 'VOLCANOS' },
+            { id: '2045468354', name: 'VS.EXCELSIOR', team: 'VOLCANOS' },
+            { id: '949626897', name: 'VS.JOKE', team: 'VOLCANOS' },
+            { id: '342271347', name: 'ALITAOX WASK', team: 'WASK' },
+            { id: '268835858', name: 'GENUIS WASK', team: 'WASK' },
+            { id: '1876594594', name: 'LMECH WASK', team: 'WASK' },
+            { id: '7236452189', name: 'EVAN WASK', team: 'WASK' },
+            { id: '650488481', name: 'BOHATER WASK', team: 'WASK' },
+            { id: '2793189585', name: 'CAPS WASK', team: 'WASK' },
+            { id: '2135942989', name: 'XP POKIIX', team: 'XPROJEKT' },
+            { id: '612901798', name: 'XP Skyitoo', team: 'XPROJEKT' },
+            { id: '521058817', name: 'XP LBEHJAAa', team: 'XPROJEKT' },
+            { id: '1917330400', name: 'XP ZACK', team: 'XPROJEKT' },
+            { id: '941145372', name: 'XP PERUzx', team: 'XPROJEKT' },
+            { id: '2032731164', name: 'XP MR ALi', team: 'XPROJEKT' }
+        ];
+
+        // ===== دالة الترتيب =====
+        function sortPlayers(players) {
+            return players.sort((a, b) => {
+                if (a.kill !== b.kill) return b.kill - a.kill;
+                if (a.damage !== b.damage) return b.damage - a.damage;
+                return b.assist - a.assist;
+            });
+        }
+
+        // ===== عرض رسالة =====
+        function showMessage(text, isError = false) {
+            const msg = document.getElementById('loadingMessage');
+            msg.textContent = text;
+            msg.style.color = isError ? '#ff6b6b' : '#f7d875';
+            msg.classList.add('show');
+        }
+
+        function hideMessage() {
+            document.getElementById('loadingMessage').classList.remove('show');
+        }
+
+        // ===== تحديث عداد الملفات =====
+        function updateFileCount() {
+            document.getElementById('fileCountDisplay').textContent = `📁 ${loadedFilesCount} ملف`;
+            document.getElementById('fileCount').textContent = loadedFilesCount;
+        }
+
+        // ===== تحديث الإحصائيات =====
+        function updateSummaryStats() {
+            const statsDiv = document.getElementById('summaryStats');
+            if (Object.keys(allPlayersStats).length === 0) {
+                statsDiv.style.display = 'none';
+                return;
+            }
+            statsDiv.style.display = 'block';
+            
+            const total = Object.keys(allPlayersStats).length;
+            document.getElementById('totalPlayers').textContent = total;
+            
+            const sorted = Object.values(allPlayersStats).sort((a, b) => {
+                if (a.kill !== b.kill) return b.kill - a.kill;
+                if (a.damage !== b.damage) return b.damage - a.damage;
+                return b.assist - a.assist;
+            });
+            
+            if (sorted.length > 0) {
+                document.getElementById('bestPlayer').textContent = sorted[0].player;
+            }
+        }
+
+        // ===== تحميل الصور تلقائياً =====
+        function loadAutoImages() {
+            const top4 = playersData.slice(0, 4);
+            const playerCards = document.querySelectorAll('.player-card');
+
+            const playerMap = {};
+            top4.forEach((player) => {
+                const name = player.player.trim();
+                playerMap[name] = player;
+                const noSpace = name.replace(/\s+/g, '');
+                playerMap[noSpace] = player;
+                playerMap[name.toLowerCase()] = player;
+                if (name === 'XP LBEHJAAa') {
+                    playerMap['LPBEHJAAa'] = player;
+                    playerMap['lpbehjaaa'] = player;
+                }
+                if (name === 'XP POKIIX') {
+                    playerMap['POKIIX'] = player;
+                }
+                if (name === 'XP Skyitoo') {
+                    playerMap['Skyitoo'] = player;
+                }
+                if (name === 'HELL MUTEzz') {
+                    playerMap['MUTEzz'] = player;
+                }
+            });
+
+            let loadedCount = 0;
+            const totalImages = AUTO_IMAGES.length;
+
+            AUTO_IMAGES.forEach((imageName) => {
+                const playerName = imageName.replace(/\.[^/.]+$/, '').trim();
+                
+                let matchedPlayer = null;
+                const searchNames = [
+                    playerName,
+                    playerName.replace(/\s+/g, ''),
+                    playerName.toLowerCase(),
+                    playerName.replace(/\s+/g, '').toLowerCase()
+                ];
+
+                for (const searchName of searchNames) {
+                    if (playerMap[searchName]) {
+                        matchedPlayer = playerMap[searchName];
+                        break;
+                    }
+                }
+
+                if (!matchedPlayer) {
+                    for (const key in playerMap) {
+                        if (key.toLowerCase().includes(playerName.toLowerCase()) || 
+                            playerName.toLowerCase().includes(key.toLowerCase())) {
+                            matchedPlayer = playerMap[key];
+                            break;
+                        }
+                    }
+                }
+
+                let cardIndex = -1;
+                if (matchedPlayer) {
+                    const cardElements = document.querySelectorAll('.player-card');
+                    for (let i = 0; i < cardElements.length; i++) {
+                        const info = cardElements[i].querySelector('.player-info');
+                        if (info) {
+                            const pname = info.querySelector('.pname');
+                            if (pname && pname.textContent === matchedPlayer.player) {
+                                cardIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (cardIndex === -1) {
+                    loadedCount++;
+                    return;
+                }
+
+                const card = playerCards[cardIndex];
+                const imgPath = imageName;
+                const img = new Image();
+                
+                img.onload = function() {
+                    const oldImg = card.querySelector('img');
+                    if (oldImg) oldImg.remove();
+                    
+                    const placeholder = card.querySelector('.placeholder-text');
+                    if (placeholder) placeholder.style.display = 'none';
+
+                    const newImg = document.createElement('img');
+                    newImg.src = imgPath;
+                    newImg.alt = matchedPlayer ? matchedPlayer.player : imageName;
+                    newImg.style.width = '100%';
+                    newImg.style.height = '100%';
+                    newImg.style.objectFit = 'cover';
+                    newImg.style.position = 'absolute';
+                    newImg.style.top = '0';
+                    newImg.style.left = '0';
+                    card.appendChild(newImg);
+
+                    const badge = card.querySelector('.rank-badge');
+                    if (badge && matchedPlayer) {
+                        badge.textContent = `#${matchedPlayer.rank}`;
+                        badge.style.display = 'block';
+                    }
+
+                    const info = card.querySelector('.player-info');
+                    if (info && matchedPlayer) {
+                        const pname = info.querySelector('.pname');
+                        const pteam = info.querySelector('.pteam');
+                        const pstats = info.querySelector('.pstats');
+                        if (pname) pname.textContent = matchedPlayer.player;
+                        if (pteam) pteam.textContent = matchedPlayer.team;
+                        if (pstats) {
+                            pstats.innerHTML = `
+                                <span>ELIMS ${matchedPlayer.kill}</span>
+                                <span>DAMAGE ${matchedPlayer.damage.toLocaleString()}</span>
+                                <span>ASSIST ${matchedPlayer.assist}</span>
+                            `;
+                        }
+                        info.style.display = 'block';
+                    }
+
+                    if (matchedPlayer && matchedPlayer.rank === 1) {
+                        card.style.borderColor = '#f7d875';
+                        card.style.boxShadow = '0 0 40px rgba(247, 216, 117, 0.15)';
+                    }
+
+                    loadedCount++;
+                };
+
+                img.onerror = function() {
+                    loadedCount++;
+                };
+
+                img.src = imgPath;
+            });
+        }
+
+        // ===== رفع الصور يدوياً =====
+        function loadImagesManually(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) {
+                showMessage('⚠️ لم تختار أي صور', true);
+                setTimeout(hideMessage, 2000);
+                return;
+            }
+
+            if (playersData.length === 0) {
+                showMessage('⚠️ يرجى تحميل ملفات CSV أولاً', true);
+                setTimeout(hideMessage, 3000);
+                return;
+            }
+
+            showMessage(`⏳ جاري رفع ${files.length} صورة...`);
+
+            const top4 = playersData.slice(0, 4);
+            const playerCards = document.querySelectorAll('.player-card');
+
+            const playerMap = {};
+            top4.forEach(player => {
+                const name = player.player.trim();
+                playerMap[name] = player;
+                const noSpace = name.replace(/\s+/g, '');
+                playerMap[noSpace] = player;
+                playerMap[name.toLowerCase()] = player;
+                if (name === 'XP LBEHJAAa') {
+                    playerMap['LPBEHJAAa'] = player;
+                }
+                if (name === 'XP POKIIX') {
+                    playerMap['POKIIX'] = player;
+                }
+                if (name === 'XP Skyitoo') {
+                    playerMap['Skyitoo'] = player;
+                }
+                if (name === 'HELL MUTEzz') {
+                    playerMap['MUTEzz'] = player;
+                }
+            });
+
+            let loadedCount = 0;
+            const totalImages = Math.min(files.length, top4.length);
+
+            for (let i = 0; i < totalImages; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                const fileName = file.name.replace(/\.[^/.]+$/, '').trim();
+
+                let matchedPlayer = null;
+                const searchNames = [
+                    fileName,
+                    fileName.replace(/\s+/g, ''),
+                    fileName.toLowerCase(),
+                    fileName.replace(/\s+/g, '').toLowerCase()
+                ];
+
+                for (const searchName of searchNames) {
+                    if (playerMap[searchName]) {
+                        matchedPlayer = playerMap[searchName];
+                        break;
+                    }
+                }
+
+                if (!matchedPlayer) {
+                    for (const key in playerMap) {
+                        if (key.toLowerCase().includes(fileName.toLowerCase()) || 
+                            fileName.toLowerCase().includes(key.toLowerCase())) {
+                            matchedPlayer = playerMap[key];
+                            break;
+                        }
+                    }
+                }
+
+                if (!matchedPlayer) {
+                    loadedCount++;
+                    continue;
+                }
+
+                let cardIndex = -1;
+                const cardElements = document.querySelectorAll('.player-card');
+                for (let j = 0; j < cardElements.length; j++) {
+                    const info = cardElements[j].querySelector('.player-info');
+                    if (info) {
+                        const pname = info.querySelector('.pname');
+                        if (pname && pname.textContent === matchedPlayer.player) {
+                            cardIndex = j;
+                            break;
+                        }
+                    }
+                }
+
+                if (cardIndex === -1) {
+                    loadedCount++;
+                    continue;
+                }
+
+                const card = playerCards[cardIndex];
+
+                reader.onload = function(e) {
+                    const imgData = e.target.result;
+
+                    const oldImg = card.querySelector('img');
+                    if (oldImg) oldImg.remove();
+                    
+                    const placeholder = card.querySelector('.placeholder-text');
+                    if (placeholder) placeholder.style.display = 'none';
+
+                    const img = document.createElement('img');
+                    img.src = imgData;
+                    img.alt = matchedPlayer.player;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    img.style.position = 'absolute';
+                    img.style.top = '0';
+                    img.style.left = '0';
+                    card.appendChild(img);
+
+                    const badge = card.querySelector('.rank-badge');
+                    if (badge) {
+                        badge.textContent = `#${matchedPlayer.rank}`;
+                        badge.style.display = 'block';
+                    }
+
+                    const info = card.querySelector('.player-info');
+                    if (info) {
+                        const pname = info.querySelector('.pname');
+                        const pteam = info.querySelector('.pteam');
+                        const pstats = info.querySelector('.pstats');
+                        if (pname) pname.textContent = matchedPlayer.player;
+                        if (pteam) pteam.textContent = matchedPlayer.team;
+                        if (pstats) {
+                            pstats.innerHTML = `
+                                <span>ELIMS ${matchedPlayer.kill}</span>
+                                <span>DAMAGE ${matchedPlayer.damage.toLocaleString()}</span>
+                                <span>ASSIST ${matchedPlayer.assist}</span>
+                            `;
+                        }
+                        info.style.display = 'block';
+                    }
+
+                    if (matchedPlayer.rank === 1) {
+                        card.style.borderColor = '#f7d875';
+                        card.style.boxShadow = '0 0 40px rgba(247, 216, 117, 0.15)';
+                    }
+
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        showMessage(`✅ تم رفع ${loadedCount} صورة بنجاح!`);
+                        setTimeout(hideMessage, 3000);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ===== تحديث الواجهة =====
+        function updateUI() {
+            updatePlayerCards();
+        }
+
+        function updatePlayerCards() {
+            const top4 = playersData.slice(0, 4);
+            const cards = document.querySelectorAll('.player-card');
+
+            cards.forEach((card, index) => {
+                const oldImg = card.querySelector('img');
+                if (oldImg) oldImg.remove();
+
+                const placeholder = card.querySelector('.placeholder-text');
+                const badge = card.querySelector('.rank-badge');
+                const info = card.querySelector('.player-info');
+
+                if (index < top4.length) {
+                    const player = top4[index];
+
+                    if (badge) {
+                        badge.textContent = `#${player.rank}`;
+                        badge.style.display = 'block';
+                    }
+
+                    if (placeholder) placeholder.style.display = 'flex';
+
+                    if (info) {
+                        const pname = info.querySelector('.pname');
+                        const pteam = info.querySelector('.pteam');
+                        const pstats = info.querySelector('.pstats');
+                        if (pname) pname.textContent = player.player;
+                        if (pteam) pteam.textContent = player.team;
+                        if (pstats) {
+                            pstats.innerHTML = `
+                                <span>ELIMS ${player.kill}</span>
+                                <span>DAMAGE ${player.damage.toLocaleString()}</span>
+                                <span>ASSIST ${player.assist}</span>
+                            `;
+                        }
+                        info.style.display = 'block';
+                    }
+
+                    if (player.rank === 1) {
+                        card.style.borderColor = '#f7d875';
+                        card.style.boxShadow = '0 0 40px rgba(247, 216, 117, 0.15)';
+                    } else {
+                        card.style.borderColor = 'rgba(255, 215, 0, 0.12)';
+                        card.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.6)';
+                    }
+                } else {
+                    if (badge) badge.style.display = 'none';
+                    if (info) info.style.display = 'none';
+                    if (placeholder) {
+                        placeholder.style.display = 'flex';
+                        placeholder.querySelector('span:last-child').textContent = 'لا يوجد لاعب';
+                    }
+                }
+            });
+        }
+
+        // ===== إعادة تعيين البيانات =====
+        function resetData() {
+            allPlayersStats = {};
+            playersData = [];
+            loadedFilesCount = 0;
+            updateFileCount();
+            document.getElementById('summaryStats').style.display = 'none';
+            
+            // إعادة تعيين خلفية التصميم
+            const bgImg = document.getElementById('designBackground');
+            bgImg.src = '';
+            bgImg.style.display = 'none';
+            document.getElementById('designOverlay').classList.remove('active');
+            
+            const cards = document.querySelectorAll('.player-card');
+            cards.forEach(card => {
+                const oldImg = card.querySelector('img');
+                if (oldImg) oldImg.remove();
+                
+                const placeholder = card.querySelector('.placeholder-text');
+                if (placeholder) {
+                    placeholder.style.display = 'flex';
+                    placeholder.querySelector('span:last-child').textContent = 'انتظر الصورة';
+                }
+                
+                const info = card.querySelector('.player-info');
+                if (info) info.style.display = 'none';
+                
+                const badge = card.querySelector('.rank-badge');
+                if (badge) badge.style.display = 'none';
+                
+                card.style.borderColor = 'rgba(255, 215, 0, 0.12)';
+                card.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.6)';
+            });
+            
+            showMessage('🔄 تم إعادة التعيين');
+            setTimeout(hideMessage, 2000);
+        }
+
+        // ===== تحميل الصورة =====
+        function downloadImage() {
+            const element = document.getElementById('capture');
+            const btn = document.querySelector('.controls button:first-child');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ جاري التحميل...';
+            btn.disabled = true;
+
+            html2canvas(element, {
+                scale: 1.5,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#0b0e1a',
+                width: 1920,
+                height: 1080,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'LEGENDARY_SUPER_LEAGUE_S9_BEST4.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(error => {
+                console.error('Error:', error);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alert('حدث خطأ أثناء تحميل الصورة.');
+            });
+        }
+
+        // ===== تهيئة الصفحة =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحميل الأسماء المستعارة
+            loadAliasesFromStorage();
+            
+            // تحميل قاعدة اللاعبين
+            PLAYERS_DB = [...DEFAULT_PLAYERS_DB];
+
+            const defaultPlayers = [
+                { player: 'HELL MUTEzz', team: 'HELL ESP', kill: 7, damage: 2759, assist: 4 },
+                { player: 'XP LBEHJAAa', team: 'XPROJEKT', kill: 11, damage: 4978, assist: 0 },
+                { player: 'XP POKIIX', team: 'XPROJEKT', kill: 7, damage: 4940, assist: 0 },
+                { player: 'XP Skyitoo', team: 'XPROJEKT', kill: 9, damage: 5537, assist: 0 }
+            ];
+            
+            playersData = sortPlayers([...defaultPlayers]);
+            playersData.forEach((p, index) => {
+                p.rank = index + 1;
+            });
+
+            defaultPlayers.forEach(p => {
+                const key = p.player.toLowerCase();
+                allPlayersStats[key] = { ...p };
+            });
+
+            updateUI();
+            updateSummaryStats();
+            updateFileCount();
+            
+            showMessage(`✅ تم تحميل ${Object.keys(ALIAS_MAP).length} اسم مستعار. اختر ملفات CSV لجمع الإحصائيات`);
+            setTimeout(hideMessage, 4000);
+            
+            setTimeout(() => loadAutoImages(), 500);
+        });
+    </script>
+
+</body>
+</html>
